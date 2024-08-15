@@ -11,6 +11,7 @@ import backGroundData from "../../../../components/BackGround";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { FaEdit } from "react-icons/fa";
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 
 declare global {
     interface Window {
@@ -265,59 +266,65 @@ const Live2DModelComponent = () => {
                     <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={downAngle}>-</button>
                 </div>
             </div>
-            {isChangeBackGround && (
-                <div className={`fixed top-4 bottom-[10vh] h-[88vh] left-4 right-4 bg-[#333333] rounded-lg p-4 ${isChangeBackGround === true ? 'z-30' : '-z-30'}`}>
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="font-bold text-lg text-white">Đổi Ảnh Nền</h2>
-                        <div className='flex justify-center items-center'>
-                            {!editModeBackGround ?
-                                <FaEdit className="text-md text-white cursor-pointer me-5" onClick={() => {
-                                    setEditModeBackGround(true);
-                                }} />
-                                : <div className='flex justify-center items-center'>
-                                    <textarea
-                                        placeholder='Nhập URL...'
-                                        autoFocus
-                                        className="resize-none border-none focus:outline-none rounded-md overflow-x-auto overflow-y-hidden px-2 bg-[#333333] text-white h-[1.5em] w-[30vw] me-2 whitespace-nowrap"
-                                        rows={1} // Đặt số hàng để hiển thị 1 hàng
-                                        ref={textareaRef} // Tham chiếu đến textarea
-                                    />
-                                    <IoCheckmarkDoneCircle onClick={() => {
-                                        if (textareaRef.current) {
-                                            // Lấy giá trị từ textarea
-                                            const url = textareaRef.current.value;
-                                            // Lưu giá trị URL vào localStorage
-                                            window.localStorage.setItem('backgrounds', url);
-                                            setChangeBackGround(url);
-                                            closeChangeBackGround();
-                                        }
-                                    }} className="font-bold text-lg cursor-pointer text-white mx-2" />
-                                </div>}
-                            <AiOutlineClose className="text-xl text-white cursor-pointer" onClick={closeChangeBackGround} />
+            <AnimatePresence>
+                {isChangeBackGround && (
+                    <motion.div className={`fixed top-4 bottom-[10vh] h-[88vh] left-4 right-4 bg-[#333333] rounded-lg p-4 ${isChangeBackGround === true ? 'z-30' : '-z-30'}`}
+                        initial={{ translateY: -25, opacity: 0 }}
+                        animate={{ translateY: 0, opacity: 1 }}
+                        exit={{ translateY: 25, opacity: 0 }}
+                        transition={{ duration: 0.25 }}>
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="font-bold text-lg text-white">Đổi Ảnh Nền</h2>
+                            <div className='flex justify-center items-center'>
+                                {!editModeBackGround ?
+                                    <FaEdit className="text-md text-white cursor-pointer me-5" onClick={() => {
+                                        setEditModeBackGround(true);
+                                    }} />
+                                    : <div className='flex justify-center items-center'>
+                                        <textarea
+                                            placeholder='Nhập URL...'
+                                            autoFocus
+                                            className="resize-none border-none focus:outline-none rounded-md overflow-x-auto overflow-y-hidden px-2 bg-[#333333] text-white h-[1.5em] w-[30vw] me-2 whitespace-nowrap"
+                                            rows={1} // Đặt số hàng để hiển thị 1 hàng
+                                            ref={textareaRef} // Tham chiếu đến textarea
+                                        />
+                                        <IoCheckmarkDoneCircle onClick={() => {
+                                            if (textareaRef.current) {
+                                                // Lấy giá trị từ textarea
+                                                const url = textareaRef.current.value;
+                                                // Lưu giá trị URL vào localStorage
+                                                window.localStorage.setItem('backgrounds', url);
+                                                setChangeBackGround(url);
+                                                closeChangeBackGround();
+                                            }
+                                        }} className="font-bold text-lg cursor-pointer text-white mx-2" />
+                                    </div>}
+                                <AiOutlineClose className="text-xl text-white cursor-pointer" onClick={closeChangeBackGround} />
+                            </div>
                         </div>
-                    </div>
-                    <div className="h-[90%] overflow-auto">
-                        <div className='grid grid-cols-2'>
-                            {backGroundData.backgrounds.map((background: any, index) => (
-                                <div key={index} className='mx-1 my-1'>
-                                    <Image
-                                        src={background.url}
-                                        alt={"Ảnh Nền"}
-                                        width={1920}
-                                        height={1080}
-                                        className="w-[100%] h-auto cursor-pointer"
-                                        onClick={() => {
-                                            window.localStorage.setItem('backgrounds', background.url);
-                                            setChangeBackGround(background.url);
-                                            closeChangeBackGround();
-                                        }}
-                                    />
-                                </div>
-                            ))}
+                        <div className="h-[90%] overflow-auto">
+                            <div className='grid grid-cols-2'>
+                                {backGroundData.backgrounds.map((background: any, index) => (
+                                    <div key={index} className='mx-1 my-1'>
+                                        <Image
+                                            src={background.url}
+                                            alt={"Ảnh Nền"}
+                                            width={1920}
+                                            height={1080}
+                                            className="w-[100%] h-auto cursor-pointer"
+                                            onClick={() => {
+                                                window.localStorage.setItem('backgrounds', background.url);
+                                                setChangeBackGround(background.url);
+                                                closeChangeBackGround();
+                                            }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 };

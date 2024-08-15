@@ -9,6 +9,7 @@ import { CiSettings } from "react-icons/ci";
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
 import { LiaRandomSolid } from "react-icons/lia";
+import { motion, AnimatePresence } from 'framer-motion';
 
 type JsonData = {
     Version: number;
@@ -279,23 +280,33 @@ const Live2DModelComponent = () => {
                     }}
                 ></div>
             }
-            {isPlayOpen && !isPlayRandom &&
-                <div className="fixed flex justify-center bg-[#333333] items-center text-sm bottom-0 left-[50%] w-[100%] transform -translate-x-1/2 py-2 px-4 text-white">
-                    <div>
-                        <LiaRandomSolid className="text-xl font-bold cursor-pointer"
-                            onClick={() => {
-                                (modelRef.current as any).internalModel.motionManager.groups.idle = 'Animation';
-                                setIsPlayRandom(true);
-                            }} />
-                        <div className='mt-2 h-[30vh] overflow-auto'>
-                            {motions.map((title, index) => (
-                                <button key={index}
-                                    className="px-2 py-1 my-2 mx-2 text-xs rounded-lg font-bold bg-white text-black" onClick={() => setPlayMotions(title)}>{title}</button>
-                            ))}
+            <AnimatePresence>
+                {isPlayOpen && !isPlayRandom &&
+                    <motion.div className="fixed flex justify-center bg-[#333333] items-center text-sm bottom-0 left-[50%] w-[100%] transform -translate-x-1/2 py-2 px-4 text-white"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "38vh", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25 }}>
+                        <div>
+                            <LiaRandomSolid className="text-xl font-bold cursor-pointer"
+                                onClick={() => {
+                                    (modelRef.current as any).internalModel.motionManager.groups.idle = 'Animation';
+                                    setIsPlayRandom(true);
+                                }} />
+                            <motion.div className='mt-2 h-[30vh] overflow-auto'
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "30vh", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.25 }}>
+                                {motions.map((title, index) => (
+                                    <button key={index}
+                                        className="px-2 py-1 my-2 mx-2 text-xs rounded-lg font-bold bg-white text-black" onClick={() => setPlayMotions(title)}>{title}</button>
+                                ))}
+                            </motion.div>
                         </div>
-                    </div>
-                </div>
-            }
+                    </motion.div>
+                }
+            </AnimatePresence>
             {!isPlayMotion && !isPlayRandom &&
                 <div className="relative">
                     <div className="fixed top-4 right-4 opacity-50">
