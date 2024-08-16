@@ -154,7 +154,7 @@ const ChatBox: React.FC = () => {
                                 }}
                             /></div>
                         }
-                        <div className={`px-6 pb-6 ${isTypeNameModalOpen ? "pt-4" : "pt-6"}`}>
+                        <div className={`px-6 pb-6 ${isTypeNameModalOpen ? "pt-2" : "pt-6"}`}>
                             <h2 className="text-lg font-bold mb-4">Vui lòng chọn 1 nhân vật Anime!</h2>
                             <form onSubmit={handleSearch} className="flex mb-4">
                                 <input
