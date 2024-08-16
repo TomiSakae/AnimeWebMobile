@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, Suspense } from 'react';
 import KitsuList from '../components/KitsuList';
+import Image from 'next/image';
 import { MdExpandMore } from "react-icons/md";
 import { MdExpandLess } from "react-icons/md";
 import { useFloating, autoUpdate, offset, flip } from '@floating-ui/react-dom';
@@ -24,6 +25,7 @@ const Anime = () => {
     return value || defaultValue;
   };
 
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isTvPopupOpen, setIsTvPopupOpen] = useState(false);
   const [isCalendarPopupOpen, setIsCalendarPopupOpen] = useState(false);
   const [subtype, setSubtype] = useState(() => getQueryParam('subtype', 'TV'));
@@ -272,6 +274,32 @@ const Anime = () => {
       </AnimatePresence>
       <div className="container mx-auto mt-12 bg-black mb-12">
         <KitsuList subtype={subtype} year={year} season={season} />
+      </div>
+      <div
+        className={`fixed bottom-[55px] right-[10px] bg-white rounded-lg shadow z-50 cursor-pointer overflow-hidden transition-all duration-300 flex items-center justify-center ${isExpanded ? 'w-24' : 'w-12'
+          }`}
+      >
+        <div className='flex items-center justify-center'>
+          <Image
+            src="/quiz.svg"
+            alt="quiz"
+            width={32}
+            height={32}
+            className={`m-2 transition-opacity duration-300 ${isExpanded ? 'opacity-100' : 'opacity-0 hidden'
+              }`}
+            onClick={() => {
+              router.push(`/quiz?subtype=${subtype}&year=${year}&season=${season}`);
+            }}
+          />
+          <Image
+            src="/menu.svg"
+            alt="menu"
+            width={32}
+            height={32}
+            className='m-2'
+            onClick={() => setIsExpanded((prev) => !prev)}
+          />
+        </div>
       </div>
     </main>
   );
