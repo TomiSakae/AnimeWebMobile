@@ -124,8 +124,8 @@ const ChatBox: React.FC = () => {
 
     const selectCharacter = (character: Character) => {
         setUserIcon(character.images.jpg.image_url);
-        setUserName(character.name);
-        setSearchQuery(character.name);
+        setUserName(character.name.split(" ").reverse().join(" "));
+        setSearchQuery(character.name.split(" ").reverse().join(" "));
         setSelectedCharacterId(character.mal_id); // Update the selected character ID
     };
 
@@ -188,7 +188,7 @@ const ChatBox: React.FC = () => {
                                                 quality={100}
                                             />
                                         </div>
-                                        <p>{character.name}</p>
+                                        <p>{character.name.split(" ").reverse().join(" ")}</p>
                                     </div>
                                 ))}
                             </div>
