@@ -85,6 +85,27 @@ body {
   animation-name: zoomInLow;
 }
 
+.image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12vw;
+  /* Chiều rộng khung */
+  height: 12vw;
+  /* Chiều cao khung */
+  overflow: hidden;
+  border-radius: 100%;
+  /* Hoặc bất kỳ giá trị nào bạn muốn cho góc bo tròn */
+}
+
+.image-container img {
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: contain;
+  object-position: top;
+  /* Đảm bảo ảnh không bị cắt */
+}
+
 .box {
   border: 1px solid transparent;
   background:
