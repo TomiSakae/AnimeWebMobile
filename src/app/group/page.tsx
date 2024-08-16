@@ -135,7 +135,12 @@ const ChatBox: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-[#111111] pb-12">
+        <div className="flex flex-col h-screen bg-[#111111] py-12">
+            <div className="fixed top-0 left-0 p-4 bg-[#222222] w-screen">
+                <div className="flex text-white font-bold items-center">
+                    <p>Phòng Chat Anime</p>
+                </div>
+            </div>
             {isNameModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-[#333333] text-white rounded shadow">
@@ -154,7 +159,7 @@ const ChatBox: React.FC = () => {
                             <form onSubmit={handleSearch} className="flex mb-4">
                                 <input
                                     type="text"
-                                    className="flex-1 p-2 border rounded bg-[#333333]"
+                                    className="flex-1 p-2 outline-none border rounded bg-[#333333]"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Vui lòng nhập tên..."
