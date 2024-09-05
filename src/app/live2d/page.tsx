@@ -1,18 +1,50 @@
 'use client'
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import images from '../../../public/live2d/steam_models/img';
 import { useRouter } from 'next/navigation';
 
 const Home = () => {
     const router = useRouter();
-    // Đảo ngược thứ tự của mảng images
     const reversedImages = [...images].reverse();
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: 'spring',
+                stiffness: 100
+            }
+        }
+    };
+
     return (
-        <div className="flex flex-wrap mb-16">
+        <motion.div
+            className="flex flex-wrap mb-16"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+        >
             {reversedImages.map((image) => (
-                <div key={image.id} className="w-1/2 p-[2px]">
-                    <div className="w-full aspect-w-1 aspect-h-1 relative cursor-pointer"
+                <motion.div
+                    key={image.id}
+                    className="w-1/2 p-[2px]"
+                    variants={itemVariants}
+                >
+                    <div
+                        className="w-full aspect-w-1 aspect-h-1 relative cursor-pointer"
                         onClick={() => {
                             router.push(`/live2d/show/edit/?id=${image.id}`);
                             window.sessionStorage.setItem('reload', 'true');
@@ -27,9 +59,9 @@ const Home = () => {
                             className="w-auto rounded-sm h-auto"
                         />
                     </div>
-                </div>
+                </motion.div>
             ))}
-        </div>
+        </motion.div>
     );
 };
 

@@ -205,65 +205,69 @@ const Live2DModelComponent = () => {
                     backgroundRepeat: 'no-repeat',
                 }} />
             <div className="relative">
-                <div className="fixed flex flex-col justify-center items-center top-4 right-4 opacity-50">
-                    <div className="">
-                        <AiOutlineClose
-                            className="text-xl text-white cursor-pointer"
+                <div className="fixed top-0 right-0 bottom-0 bg-gray-800 bg-opacity-70 p-2 flex flex-col items-center justify-between w-16 sm:w-20">
+                    <div className="flex flex-col items-center space-y-4">
+                        {/* Close button */}
+                        <button
+                            className="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full"
                             onClick={() => {
                                 window.sessionStorage.setItem('scale' + modelId, String(scaleModel));
                                 window.sessionStorage.setItem('degrees' + modelId, String(angle));
                                 router.push(`/live2d/show/?id=${modelId}`);
                                 window.sessionStorage.setItem('reload', 'true');
                             }}
-                        />
+                        >
+                            <AiOutlineClose className="text-lg" />
+                        </button>
+
+                        {/* Scale control */}
+                        <div className="flex flex-col items-center">
+                            <label className="text-white text-xs mb-1">Tỷ lệ</label>
+                            <div className="flex flex-col items-center space-y-1">
+                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm w-full" onClick={upScale}>+</button>
+                                <input
+                                    type="text"
+                                    className="bg-gray-700 text-white px-2 py-1 rounded w-full text-center text-sm"
+                                    value={textEditingScale}
+                                    onChange={(e) => setTextEditingScale(e.target.value)}
+                                    onBlur={upScale}
+                                />
+                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm w-full" onClick={downScale}>-</button>
+                            </div>
+                        </div>
+
+                        {/* Angle control */}
+                        <div className="flex flex-col items-center">
+                            <label className="text-white text-xs mb-1">Góc</label>
+                            <div className="flex flex-col items-center space-y-1">
+                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm w-full" onClick={upAngle}>+</button>
+                                <input
+                                    type="text"
+                                    className="bg-gray-700 text-white px-2 py-1 rounded w-full text-center text-sm"
+                                    value={textEditingAngle}
+                                    onChange={(e) => setTextEditingAngle(e.target.value)}
+                                    onBlur={upAngle}
+                                />
+                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm w-full" onClick={downAngle}>-</button>
+                            </div>
+                        </div>
                     </div>
-                    <div className="mt-6">
-                        <GrPowerReset
-                            className="text-xl text-white cursor-pointer"
+
+                    <div className="flex flex-col items-center space-y-4">
+                        {/* Action buttons */}
+                        <button
+                            className="bg-green-500 hover:bg-green-600 text-white p-2 rounded flex items-center justify-center w-full"
+                            onClick={toggleChangeBackGround}
+                        >
+                            <TbBackground className="text-lg" />
+                        </button>
+                        <button
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded flex items-center justify-center w-full"
                             onClick={resetPage}
-                        />
-                    </div>
-                    <div className="mt-6">
-                        <TbBackground className="text-xl text-white cursor-pointer" onClick={toggleChangeBackGround} />
-                    </div>
-                </div>
-                <div className="fixed top-4 items-center opacity-50 right-4 mx-8 p-2 bg-gray-800 rounded-md flex space-x-2">
-                    <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={upScale}>+</button>
-                    {isEditingScale ? (
-                        <input
-                            type="text"
-                            className="text-black px-2 py-1 rounded w-[15vw]"
-                            value={textEditingScale}
-                            onChange={(e) => setTextEditingScale(e.target.value)}
-                        />
-                    ) : (
-                        <div
-                            className="text-white font-bold"
-                            onClick={() => setIsEditingScale(true)}
                         >
-                            {scaleModel}
-                        </div>
-                    )}
-                    <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={downScale}>-</button>
-                </div>
-                <div className="fixed top-4 items-center opacity-50 right-4 mx-8 mt-14 p-2 bg-gray-800 rounded-md flex space-x-2">
-                    <button className="bg-green-500 text-white px-2 py-1 rounded" onClick={upAngle}>+</button>
-                    {isEditingAngle ? (
-                        <input
-                            type="text"
-                            className="text-black px-2 py-1 rounded w-[15vw]"
-                            value={textEditingAngle}
-                            onChange={(e) => setTextEditingAngle(e.target.value)}
-                        />
-                    ) : (
-                        <div
-                            className="text-white font-bold"
-                            onClick={() => setIsEditingAngle(true)}
-                        >
-                            {angle}°
-                        </div>
-                    )}
-                    <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={downAngle}>-</button>
+                            <GrPowerReset className="text-lg" />
+                        </button>
+                    </div>
                 </div>
             </div>
             <AnimatePresence>

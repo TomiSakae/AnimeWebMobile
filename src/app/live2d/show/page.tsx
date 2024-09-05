@@ -73,6 +73,7 @@ const Live2DModelComponent = () => {
     const lastTimeRef = useRef<number>(0);
     const [isPlayRandom, setIsPlayRandom] = useState(false);
     const [isStartMotion, setIsStartMotion] = useState(false);
+    const [isModelLoaded, setIsModelLoaded] = useState(false);
 
     useEffect(() => {
         window.PIXI = PIXI;
@@ -124,6 +125,7 @@ const Live2DModelComponent = () => {
             (modelRef as any).current = model;
             (model as any).trackedPointers = {};
             setIsLoadModel(true);
+            setIsModelLoaded(true); // Add this line
             setChangeBackGround(String(window.localStorage.getItem('backgrounds')) || '/background1.avif');
         };
 
@@ -263,94 +265,90 @@ const Live2DModelComponent = () => {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                 }} />
-            {!isStartMotion &&
-                <div className={`fixed top-0 left-0 h-[100vh] w-[100vw] ${isStartMotion === false ? 'z-50' : '-z-10'}`}
+
+            {/* Start motion overlay */}
+            {isModelLoaded && !isStartMotion && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer z-50"
                     onClick={() => {
                         setIsStartMotion(true);
                         (modelRef.current as any).motion('Start');
                     }}
                 >
+                    <div className="text-white text-2xl font-bold">Nhấn Để Tương Tác</div>
                 </div>
-            }
-            {isPlayMotion && !isPlayRandom &&
-                <div
-                    className="fixed bottom-0 left-0 h-[1px] bg-[#9C4BEE] z-50"
-                    style={{
-                        width: `${(elapsedTime / (duration || 1)) * 100}%`,
-                    }}
-                ></div>
-            }
+            )}
+
+            {/* Progress bar */}
+            {isPlayMotion && !isPlayRandom && (
+                <div className="fixed bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-4 py-2 rounded-full">
+                    <div className="text-sm font-medium">
+                        {elapsedTime.toFixed(1)}s / {duration?.toFixed(1)}s
+                    </div>
+                </div>
+            )}
+
+            {/* Motion selection panel */}
             <AnimatePresence>
-                {isPlayOpen && !isPlayRandom &&
-                    <motion.div className="fixed flex justify-center bg-[#333333] items-center text-sm bottom-0 left-[50%] w-[100%] transform -translate-x-1/2 py-2 px-4 text-white"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "38vh", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25 }}>
-                        <div>
-                            <LiaRandomSolid className="text-xl font-bold cursor-pointer"
+                {isPlayOpen && !isPlayRandom && !isPlayMotion && (
+                    <motion.div
+                        className="fixed bottom-0 left-0 w-full bg-black bg-opacity-70 text-white p-4"
+                        initial={{ y: "100%" }}
+                        animate={{ y: 0 }}
+                        exit={{ y: "100%" }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold">Chạy Chuyển Động</h3>
+                            <LiaRandomSolid
+                                className="text-xl cursor-pointer hover:text-[#9C4BEE] transition-colors"
                                 onClick={() => {
                                     (modelRef.current as any).internalModel.motionManager.groups.idle = 'Animation';
                                     setIsPlayRandom(true);
-                                }} />
-                            <motion.div className='mt-2 h-[30vh] overflow-auto'
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "30vh", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.25 }}>
-                                {motions.map((title, index) => (
-                                    <button key={index}
-                                        className="px-2 py-1 my-2 mx-2 text-xs rounded-lg font-bold bg-white text-black" onClick={() => setPlayMotions(title)}>{title}</button>
-                                ))}
-                            </motion.div>
+                                }}
+                            />
+                        </div>
+                        <div className="flex flex-wrap gap-2 max-h-[30vh] overflow-y-auto">
+                            {motions.map((title, index) => (
+                                <button
+                                    key={index}
+                                    className="px-3 py-2 text-sm rounded-full bg-white text-black hover:bg-[#9C4BEE] hover:text-white transition-colors"
+                                    onClick={() => setPlayMotions(title)}
+                                >
+                                    {title}
+                                </button>
+                            ))}
                         </div>
                     </motion.div>
-                }
+                )}
             </AnimatePresence>
-            {!isPlayMotion && !isPlayRandom &&
-                <div className="relative">
-                    <div className="fixed top-4 right-4 opacity-50">
-                        <div className="">
-                            <CiSettings
-                                className="text-xl text-white cursor-pointer"
-                                onClick={() => {
-                                    router.push(`/live2d/show/edit/?id=${modelId}`);
-                                    window.sessionStorage.setItem('reload', 'true');
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className="fixed top-4 left-4 opacity-50">
-                        <div className="">
-                            <GoArrowLeft
-                                className="text-xl text-white cursor-pointer"
-                                onClick={() => {
-                                    router.push('/live2d');
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className="fixed bottom-0 right-0 bg-black opacity-50">
-                        <div>
-                            {!isPlayOpen ?
-                                <MdExpandLess
-                                    className="text-xl text-white cursor-pointer"
-                                    onClick={() => {
-                                        setIsPlayOpen((prev) => !prev);
-                                    }}
-                                />
-                                :
-                                <MdExpandMore
-                                    className="text-xl text-white cursor-pointer"
-                                    onClick={() => {
-                                        setIsPlayOpen((prev) => !prev);
-                                    }}
-                                />
-                            }
-                        </div>
-                    </div>
+
+            {/* Control buttons */}
+            {!isPlayMotion && !isPlayRandom && (
+                <div className="fixed inset-x-0 top-0 flex justify-between items-start p-4">
+                    <GoArrowLeft
+                        className="text-2xl text-white cursor-pointer hover:text-[#9C4BEE] transition-colors"
+                        onClick={() => router.push('/live2d')}
+                    />
+                    <CiSettings
+                        className="text-2xl text-white cursor-pointer hover:text-[#9C4BEE] transition-colors"
+                        onClick={() => {
+                            router.push(`/live2d/show/edit/?id=${modelId}`);
+                            window.sessionStorage.setItem('reload', 'true');
+                        }}
+                    />
                 </div>
-            }
+            )}
+
+            {/* Toggle motion panel button */}
+            {!isPlayMotion && !isPlayRandom && (
+                <button
+                    className="fixed bottom-4 right-4 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-colors"
+                    onClick={() => setIsPlayOpen((prev) => !prev)}
+                >
+                    {isPlayOpen ? <MdExpandMore className="text-2xl" /> : <MdExpandLess className="text-2xl" />}
+                </button>
+            )}
         </>
     );
 };
